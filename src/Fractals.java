@@ -3,18 +3,131 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Fractals extends Canvas {
-    private static int width = 1080;
-    private static int height = 700;
-    private static int iterations = 18;
-    private static double length = 200;
-    private static int angle1 = 20;
-    private static int angle2 = 40;
-    private static double shorten = 0.7;
-    private static double R = 255;
-    private static double G = 0;
-    private static double B = 0;
-    private static double temp = 3;
-    private static int branches;
+    private static int width = 1920;
+    private static int height = 1080;
+    private double R = 255;
+    private double G = 0;
+    private double B = 0;
+    private double temp = 3;
+    private int branches;
+
+    private int fractal = 2; // 0-Tree, 1-Circle, 2-Cross, 3-Triforce //
+    private int iterations = 18;
+    private double length = 200;
+    private int angle1 = 40;
+    private int angle2 = 40;
+    private double shorten = 0.7;
+
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.darkGray);
+        g2d.fillRect(0, 0, width, height);
+        branches = 0;
+
+        R = 255;
+        G = 0;
+        B = 0;
+
+        if (fractal == 0) {
+
+            iterations = 18;
+            length = 300;
+            angle1 = 30;
+            angle2 = 30;
+            shorten = 0.7;
+
+            branches(iterations, length);
+            g2d.translate(width / 2, height);
+            branch(g2d, length, iterations);
+        } else if (fractal == 1) {
+
+            iterations = 20;
+            length = 400;
+            angle1 = 100;
+            angle2 = 100;
+            shorten = 0.6;
+
+            branches(iterations, length);
+            g2d.translate(width / 2, height / 2);
+            circle(g2d, length, iterations);
+        } else if (fractal == 2) {
+
+            iterations = 10;
+            length = 300;
+            shorten = 0.5;
+            temp = 1.5;
+
+            branches(iterations, length);
+            g2d.translate(width / 2, height / 2);
+            cross(g2d, length, iterations);
+        }
+    }
+
+    public void branch(Graphics2D g, double len, int iteration) {
+        changeColors();
+        g.setColor(new Color((int) R, (int) G, (int) B));
+        g.drawLine(0, 0, 0, -(int) len);
+        g.translate(0, -(int) len);
+        if (len >= 1) {
+            if (iteration > 0) {
+                iteration--;
+                AffineTransform old = g.getTransform();
+                g.rotate(Math.toRadians(-angle1));
+                branch(g, len * shorten, iteration);
+                g.setTransform(old);
+                g.rotate(Math.toRadians(angle2));
+                branch(g, len * shorten, iteration);
+                g.setTransform(old);
+            }
+        }
+    }
+
+    public void circle(Graphics2D g, double len, int iteration) {
+        changeColors();
+        g.setColor(new Color((int) R, (int) G, (int) B));
+        g.drawOval((int) (0 - len / 2), (int) (0 - len / 2), (int) len, (int) len);
+        if (len >= 1) {
+            if (iteration > 0) {
+                iteration--;
+                AffineTransform old = g.getTransform();
+                g.translate((int) (-len / 2) * (angle1 / 100.0), 0);
+                circle(g, len * shorten, iteration);
+                g.setTransform(old);
+                g.translate((int) (len / 2) * (angle2 / 100.0), 0);
+                circle(g, len * shorten, iteration);
+                g.setTransform(old);
+            }
+        }
+    }
+
+    public void cross(Graphics2D g, double len, int iteration) {
+        if (iteration != iterations) {
+            changeColors();
+            g.setColor(new Color((int) R, (int) G, (int) B));
+            g.drawLine(0, 0, 0, -(int) len);
+            g.translate(0, -(int) len);
+        }
+        if (len >= 1) {
+            if (iteration > 0) {
+                iteration--;
+                AffineTransform old = g.getTransform();
+                g.rotate(Math.toRadians(-90));
+                cross(g, len * shorten, iteration);
+                g.setTransform(old);
+                g.rotate(Math.toRadians(0));
+                cross(g, len * shorten, iteration);
+                g.setTransform(old);
+                g.rotate(Math.toRadians(90));
+                cross(g, len * shorten, iteration);
+                g.setTransform(old);
+                if (iteration == iterations - 1) {
+                    g.rotate(Math.toRadians(180));
+                    cross(g, len * shorten, iteration);
+                    g.setTransform(old);
+                }
+            }
+        }
+    }
 
     public void branches(int iteration, double len) {
         if (len >= 1) {
@@ -54,39 +167,6 @@ public class Fractals extends Canvas {
         } else if (B < 0) {
             B = 0;
         }
-    }
-
-    public void branch(Graphics2D g, double len, int iteration) {
-        changeColors();
-        g.setColor(new Color((int) R, (int) G, (int) B));
-        g.drawLine(0, 0, 0, -(int) len);
-        g.translate(0, -(int) len);
-        if (len >= 1) {
-            if (iteration > 0) {
-                iteration--;
-                AffineTransform old = g.getTransform();
-                g.rotate(Math.toRadians(-angle1));
-                branch(g, len * shorten, iteration);
-                g.setTransform(old);
-                g.rotate(Math.toRadians(angle2));
-                branch(g, len * shorten, iteration);
-                g.setTransform(old);
-            }
-        }
-    }
-
-    public void paint(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.darkGray);
-        g2d.fillRect(0, 0, width, height);
-        g2d.translate(width / 2, height);
-        branches = 0;
-        branches(iterations, length);
-        R = 255;
-        G = 0;
-        B = 0;
-
-        branch(g2d, length, iterations);
     }
 
     public static void main(String[] args) {
