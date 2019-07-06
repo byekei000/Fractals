@@ -11,7 +11,7 @@ public class Fractals extends Canvas {
     private double temp = 3;
     private int branches;
 
-    private int fractal = 2; // 0-Tree, 1-Circle, 2-Cross, 3-Triforce //
+    private int fractal = 0; // 0-Tree, 1-Circle, 2-Cross, 3-Triforce //
     private int iterations = 18;
     private double length = 200;
     private int angle1 = 40;
@@ -20,7 +20,7 @@ public class Fractals extends Canvas {
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.darkGray);
+        g2d.setColor(Color.black);
         g2d.fillRect(0, 0, width, height);
         branches = 0;
 
@@ -30,10 +30,10 @@ public class Fractals extends Canvas {
 
         if (fractal == 0) {
 
-            iterations = 18;
-            length = 300;
-            angle1 = 30;
-            angle2 = 30;
+            iterations = 22;
+            length = 320;
+            angle1 = 35;
+            angle2 = 35;
             shorten = 0.7;
 
             branches(iterations, length);
